@@ -23,6 +23,26 @@ function Create(props:{clickCreate:(title:string,memo:string)=>void}){
 </form>
 }
 
+function Update(props:{title:string, memo:string, clickUpdate:(title:string,memo:string)=>void}){
+
+  const [title, setTitle] = useState(props.title);
+  const [memo, setMemo] = useState(props.memo);
+
+  return <form onSubmit={(event: React.FormEvent<HTMLFormElement>)=>{
+    event.preventDefault();
+    if (title===''){
+      alert('일정 제목을 입력해주세요');
+    }
+    else{
+      props.clickUpdate(title,memo);
+    }
+  }} >
+  <p><input type='text' name='title' placeholder='일정 제목' value={title} onChange={(e)=>{setTitle(e.target.value)}}></input></p>
+  <p><textarea name='memo' placeholder='메모' value={memo} onChange={(e)=>{setMemo(e.target.value)}}></textarea></p>
+  <p><input type='submit' value='일정 수정하기'></input></p>
+</form>
+}
+
 //todoList를 받아 각각 렌더링
 function List(props: { todos: { id: number; title: string; memo: string }[], select:(id:number)=>void }) {
   return (
@@ -85,6 +105,10 @@ function App() {
         <div>{memo}</div>
         <div>
           <button onClick={()=>{
+              setMode('UPDATE');
+          }}>수정하기</button>
+          
+          <button onClick={()=>{
               const newTodoList:TodoList=[];
               for (let i=0;i<todoList.length;i++){
                 if (id!==todoList[i].id){
@@ -99,7 +123,27 @@ function App() {
     </div>;
     
   } else if (mode==='UPDATE'){
-    
+    let title:string='';
+    let memo:string='';
+    for (let i=0;i<todoList.length;i++){
+      if (todoList[i].id==id){
+        title=todoList[i].title;
+        memo=todoList[i].memo;
+        break;
+      }
+    }
+    content=<Update title={title} memo={memo} clickUpdate={(title:string,memo:string):void=>{
+        const newTodoList:TodoList  = [...todoList];
+        for (let i=0;i<newTodoList.length;i++){
+          if (todoList[i].id===id){
+            newTodoList[i].title=title;
+            newTodoList[i].memo=memo;
+            break;
+          }
+        }
+        setTodoList(newTodoList);
+        setMode('READ');
+    }}></Update>
   }
 
   return (
