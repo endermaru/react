@@ -83,6 +83,19 @@ function App() {
     content=<div>
         <div>{title}</div>
         <div>{memo}</div>
+        <div>
+          <button onClick={()=>{
+              const newTodoList:TodoList=[];
+              for (let i=0;i<todoList.length;i++){
+                if (id!==todoList[i].id){
+                  newTodoList.push(todoList[i]);
+                }
+              }
+              setTodoList(newTodoList);
+              setMode('MAIN');
+              setId(0);
+          }}>삭제하기</button>
+        </div>
     </div>;
     
   } else if (mode==='UPDATE'){
