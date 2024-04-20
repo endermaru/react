@@ -2,6 +2,27 @@ import React, {useEffect,useState} from 'react';
 import { JsxElement } from 'typescript';
 import './App.css';
 
+//form 태그를 대신하는 컴포넌트
+function Create(props:{clickCreate:(title:string,memo:string)=>void}){
+
+  const [title, setTitle] = useState('');
+  const [memo, setMemo] = useState('');
+
+  return <form onSubmit={(event: React.FormEvent<HTMLFormElement>)=>{
+    event.preventDefault();
+    if (title===''){
+      alert('일정 제목을 입력해주세요');
+    }
+    else{
+      props.clickCreate(title,memo);
+    }
+  }} >
+  <p><input type='text' name='title' placeholder='일정 제목' value={title} onChange={(e)=>{setTitle(e.target.value)}}></input></p>
+  <p><textarea name='memo' placeholder='메모' value={memo} onChange={(e)=>{setMemo(e.target.value)}}></textarea></p>
+  <p><input type='submit' value='새 일정 만들기'></input></p>
+</form>
+}
+
 //todoList를 받아 각각 렌더링
 function List(props: { todos: { id: number; title: string; memo: string }[], select:(id:number)=>void }) {
   return (
@@ -39,11 +60,17 @@ function App() {
   //메인 콘텐츠
   let content=null;
   if (mode==='MAIN'){
-    content=<form>
-      <p><input type='text' name='title' placeholder='일정 제목'></input></p>
-      <p><textarea name='memo' placeholder='메모'></textarea></p>
-      <p><input type='submit' value='새 일정 만들기'></input></p>
-    </form>
+    content=<div>
+      메인 페이지입니다.
+      <Create clickCreate={(title:string,memo:string):void=>{
+        const newTodo = {id:nextId,title:title,memo:memo};
+        const newTodoList:TodoList = [...todoList,newTodo];
+        setTodoList(newTodoList);
+        setId(nextId);
+        setNextId(nextId+1);
+        setMode('READ');
+      }}></Create>
+    </div>
   } else if (mode==='READ'){
     let title:string='';
     let memo:string='';
