@@ -2,8 +2,26 @@ import React, {useEffect,useState} from 'react';
 import { JsxElement } from 'typescript';
 import './App.css';
 
+//todoList를 받아 각각 렌더링
+function List(props: { todos: { id: number; title: string; memo: string }[], select:(id:number)=>void }) {
+  return (
+    <ul>
+      {props.todos.map((item) => (
+        <li className='todos'>
+          <a href={'todo'+item.id} key={item.id} onClick={(event)=>{
+            event.preventDefault();
+            props.select(item.id);
+          }}>
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function App() {
-  
+
   //Todo를 담는 리스트
   type Todo = {id:number,title:string,memo:string};
   type TodoList = Todo[];
@@ -18,6 +36,7 @@ function App() {
   //Todolist 화면 모드
   const [mode,setMode]=useState('MAIN'); //MAIN / READ / UPDATE
 
+  //메인 콘텐츠
   let content=null;
   if (mode==='MAIN'){
     
@@ -35,6 +54,10 @@ function App() {
         setId(0);
       }}>TodoList</a></h1>
       {content}
+    <List todos={todoList} select={(id:number):void=>{
+      setMode('READ');
+      setId(id);
+    }}></List>
     </div>
   );
 }
