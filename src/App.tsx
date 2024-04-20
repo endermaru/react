@@ -39,8 +39,24 @@ function App() {
   //메인 콘텐츠
   let content=null;
   if (mode==='MAIN'){
-    
+    content=<form>
+      <p><input type='text' name='title' placeholder='일정 제목'></input></p>
+      <p><textarea name='memo' placeholder='메모'></textarea></p>
+      <p><input type='submit' value='새 일정 만들기'></input></p>
+    </form>
   } else if (mode==='READ'){
+    let title:string='';
+    let memo:string='';
+    for (let i=0;i<todoList.length;i++){
+      if (todoList[i].id==id){
+        title=todoList[i].title;
+        memo=todoList[i].memo;
+      }
+    }
+    content=<div>
+        <div>{title}</div>
+        <div>{memo}</div>
+    </div>;
     
   } else if (mode==='UPDATE'){
     
